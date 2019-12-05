@@ -21,6 +21,6 @@ class RatesRepository @Inject constructor(
 
 
     override fun getRates(base: String): Flowable<LatestRatesResponse> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return  remoteDataSource.getRates(base)
     }
 }

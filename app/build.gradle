@@ -55,7 +55,10 @@ dependencies {
     // Multidex
     implementation deps.android.multidex
 
-// Dagger2
+    // General
+    implementation deps.general.toasty
+
+    // Dagger2
     implementation deps.dagger.runtime
     implementation deps.dagger.android
     implementation deps.dagger.android_support

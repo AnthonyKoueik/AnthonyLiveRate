@@ -35,7 +35,7 @@ abstract class BaseActivity<V : ViewModel> : DaggerAppCompatActivity(), HasSuppo
     @LayoutRes
     abstract fun layoutRes(): Int
 
-    private lateinit var viewModel: V
+    protected lateinit var viewModel: V
 
     protected abstract fun getViewModel(): Class<V>
 
