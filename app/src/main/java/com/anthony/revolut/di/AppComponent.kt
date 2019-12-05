@@ -2,6 +2,7 @@ package com.anthony.revolut.di
 
 import com.anthony.revolut.MyApplication
 import com.anthony.revolut.di.module.AppModule
+import com.anthony.revolut.di.module.NetworkModule
 import com.anthony.revolut.di.module.ViewModelModule
 import dagger.BindsInstance
 import dagger.Component
@@ -17,7 +18,8 @@ import javax.inject.Singleton
  */
 @Singleton
 @Component(
-    modules = [AndroidSupportInjectionModule::class, AppModule::class, ViewModelModule::class]
+    modules = [AndroidSupportInjectionModule::class, AppModule::class, ViewModelModule::class,
+        NetworkModule::class]
 )
 interface AppComponent : AndroidInjector<MyApplication> {
 
