@@ -11,5 +11,5 @@ data class LatestRatesResponse(
     @SerializedName("date")
     val date: String,
     @SerializedName("rates")
-    val rates: Rates
+    val rates: Map<String, Double>
 )
