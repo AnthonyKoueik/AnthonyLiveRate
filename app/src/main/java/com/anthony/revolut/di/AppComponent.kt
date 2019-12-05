@@ -1,10 +1,8 @@
 package com.anthony.revolut.di
 
 import com.anthony.revolut.MyApplication
-import com.anthony.revolut.di.module.AppModule
-import com.anthony.revolut.di.module.NetworkModule
-import com.anthony.revolut.di.module.RepositoryModule
-import com.anthony.revolut.di.module.ViewModelModule
+import com.anthony.revolut.di.module.*
+import com.anthony.revolut.di.module.ActivityBindingModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -20,7 +18,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(
     modules = [AndroidSupportInjectionModule::class, AppModule::class, ViewModelModule::class,
-        NetworkModule::class, RepositoryModule::class]
+        NetworkModule::class, RepositoryModule::class, ActivityBindingModule::class]
 )
 interface AppComponent : AndroidInjector<MyApplication> {
 
