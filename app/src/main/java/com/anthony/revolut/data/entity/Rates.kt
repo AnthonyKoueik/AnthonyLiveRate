@@ -1,9 +1,9 @@
 package com.anthony.revolut.data.entity
 
 
-import com.google.gson.annotations.SerializedName
+import java.util.*
 
 data class Rates(
-    val symbol: String,
+    val currency: Currency,
     val rate: Double
 )

@@ -17,6 +17,6 @@ class RatesRemoteDataSource @Inject constructor(private val apiService: ApiServi
     RatesDataSource {
 
     override fun getRates(base: String): Flowable<LatestRatesResponse> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return apiService.getRates(base)
     }
 }
