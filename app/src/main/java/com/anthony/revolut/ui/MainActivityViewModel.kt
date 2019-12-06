@@ -3,15 +3,15 @@ package com.anthony.revolut.ui
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.DiffUtil
 import com.anthony.revolut.data.DataResource
 import com.anthony.revolut.data.entity.Rates
-import com.anthony.revolut.data.repository.RatesRepository
 import com.anthony.revolut.domain.GetRatesUseCase
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import java.math.BigDecimal
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -33,10 +33,10 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
     private var _currentCurrency = "EUR"
     private var _currentAmount = 1.00
 
-    private var isLoaded : Boolean = false
+    private var isLoaded: Boolean = false
 
 
-    fun testDispose(){
+    fun testDispose() {
         disposable?.let {
             if (!it.isDisposed) it.dispose()
         }
@@ -51,10 +51,11 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
 
         disposable = ratesUseCase.getRates(_currentCurrency)
             .subscribeOn(Schedulers.io())
-            .repeatWhen { it.delay(5, TimeUnit.SECONDS) }
+            .repeatWhen { it.delay(1, TimeUnit.SECONDS) }
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                if (!isLoaded) liveData.setValue(DataResource.loading(null)) }
+                if (!isLoaded) liveData.setValue(DataResource.loading(null))
+            }
             .subscribe(
                 { result ->
                     Timber.d("_currentBaseCurrency %s", result.base)
@@ -62,7 +63,7 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
                     ratesList.add(Rates(Currency.getInstance(result.base), _currentAmount))
                     ratesList.addAll(
                         result.rates.map {
-                            Rates(Currency.getInstance(it.key), it.value)
+                            Rates(Currency.getInstance(it.key), (it.value * _currentAmount))
                         }
                     )
                     isLoaded = true
@@ -79,20 +80,26 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
     }
 
     fun onNewAmountInput(newAmount: Double) {
-        /*userCurrencyAmountDisposable?.dispose()
-        updateCurrencyAmountUseCase.run(newCurrencyAmount)
-            .subscribe()
-            .let { userCurrencyAmountDisposable = it }*/
         _currentAmount = newAmount
         Timber.d("_currentAmount $_currentAmount")
     }
 
-    fun onCurrencyChanged(rates: Rates){
+    fun onCurrencyChanged(rates: Rates) {
         _currentAmount = rates.rate
         _currentCurrency = rates.currency.currencyCode
         Timber.d("_currentCurrency $_currentCurrency")
         Timber.d("_currentAmount $_currentAmount")
         loadLatestRates()
+    }
+
+    fun onRateListsDifferences(oldList: List<Rates>, newList: List<Rates>): Single<DiffUtil.DiffResult> {
+        return Single.just(DiffUtil.calculateDiff(
+            CurrencyAdapter.RatesDiffCallback(
+                oldList,
+                newList
+            )
+        ))
+            .subscribeOn(Schedulers.io())
     }
 
     override fun onCleared() {

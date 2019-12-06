@@ -10,8 +10,12 @@ import com.anthony.revolut.R
 import com.anthony.revolut.base.BaseViewHolder
 import com.anthony.revolut.data.entity.Rates
 import com.anthony.revolut.utils.EditTextInputWatcher
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_currency_rate.*
+import java.math.BigDecimal
 
 
 /**
@@ -23,7 +27,8 @@ class CurrencyAdapter(
     private val context: Context,
     dataList: MutableList<Rates>,
     onNewAmountInput: (Double) -> Unit,
-    onNewCurrency: (Rates) -> Unit
+    onNewCurrency: (Rates) -> Unit,
+    private val onDiffList: (List<Rates>, List<Rates>) -> Single<DiffUtil.DiffResult>
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     private var adapterDataList: MutableList<Rates> = dataList
@@ -31,6 +36,9 @@ class CurrencyAdapter(
     private val amountEditTextWatcher = EditTextInputWatcher(onNewAmountInput)
 
     private val newCurrencySelected = onNewCurrency
+
+
+    private var differenceListDisposable: Disposable? = null
 
     override fun getItemCount(): Int = adapterDataList.size
 
@@ -41,17 +49,22 @@ class CurrencyAdapter(
                 LayoutInflater.from(context).inflate(R.layout.item_currency_rate, parent, false)
             )
         viewHolder.itemView.setOnClickListener {
-            if(viewHolder.adapterPosition != 0) viewHolder.et_amount.requestFocus() }
-        viewHolder.et_amount.apply { setOnFocusChangeListener { view, focused ->
-            when(focused) {
-                true -> {
-                    //swapRows(viewHolder)
-                    newCurrencySelected(adapterDataList[viewHolder.adapterPosition])
-                    addTextChangedListener(amountEditTextWatcher) }
-                false -> removeTextChangedListener(amountEditTextWatcher) }}}
+            if (viewHolder.adapterPosition != 0) viewHolder.et_amount.requestFocus()
+        }
+        viewHolder.et_amount.apply {
+            setOnFocusChangeListener { view, focused ->
+                when (focused) {
+                    true -> {
+                        //swapRows(viewHolder)
+                        newCurrencySelected(adapterDataList[viewHolder.adapterPosition])
+                        addTextChangedListener(amountEditTextWatcher)
+                    }
+                    false -> removeTextChangedListener(amountEditTextWatcher)
+                }
+            }
+        }
         return viewHolder
     }
-
 
 
     private fun swapRows(viewHolder: RecyclerView.ViewHolder) {
@@ -69,11 +82,14 @@ class CurrencyAdapter(
         position: Int,
         payloads: MutableList<Any>
     ) {
-        when(payloads.isEmpty()) {
+        when (payloads.isEmpty()) {
             true -> onBindViewHolder(holder, position)
-            false -> with((holder as CurrencyViewHolder).et_amount) { if(!isFocused) setText((payloads[0] as Rates).rate.toString()) }
+            false -> with((holder as CurrencyViewHolder).et_amount) {
+                if (!isFocused) setText((payloads[0] as CurrencyAmountDifference).newAmountValue.toString())
+            }
         }
     }
+
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
 
 
@@ -90,13 +106,17 @@ class CurrencyAdapter(
 
     /* a better way for updating Recycler view adapter */
     fun updateRateList(newList: MutableList<Rates>) {
-        val ratesDiffCallback = RatesDiffCallback(adapterDataList, newList)
-        val diffResult = DiffUtil.calculateDiff(ratesDiffCallback)
 
-        this.adapterDataList.clear()
-        this.adapterDataList.addAll(newList)
+        differenceListDisposable?.dispose()
+        onDiffList(adapterDataList, newList)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                adapterDataList.clear()
+                adapterDataList.addAll(newList)
+                it.dispatchUpdatesTo(this@CurrencyAdapter)
+            }, {})
+            .let { differenceListDisposable = it }
 
-        diffResult.dispatchUpdatesTo(this@CurrencyAdapter)
     }
 
     /* My Item View in the List */
@@ -153,9 +173,11 @@ class CurrencyAdapter(
             return oldList[oldItemPosition].rate == newList[newItemPosition].rate
         }
 
-        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-            return super.getChangePayload(oldItemPosition, newItemPosition)
-        }
+        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? =
+            CurrencyAmountDifference(newList[newItemPosition].rate)
     }
+
+    data class CurrencyAmountDifference(val newAmountValue: Double)
+
 
 }
