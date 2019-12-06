@@ -15,8 +15,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_currency_rate.*
-import java.math.BigDecimal
-
 
 /**
  * Created by Anthony Koueik on 12/5/2019.

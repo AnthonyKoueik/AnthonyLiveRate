@@ -7,9 +7,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_flag"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_margin="16dp"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_margin="12dp"
         android:adjustViewBounds="false"
         android:cropToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -20,11 +20,11 @@
         android:id="@+id/tv_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="EURO"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toStartOf="@+id/et_amount"
         app:layout_constraintHorizontal_bias="0.1"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_flag"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,9 +33,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Europe"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/et_amount"
-        app:layout_constraintHorizontal_bias="0.104"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_flag"
         app:layout_constraintTop_toBottomOf="@+id/tv_code"
         app:layout_constraintVertical_bias="0.38" />
