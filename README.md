@@ -8,3 +8,12 @@ Many missing improvement  for this application:
 * Swipe-to-refresh
 * Include a lazy Image Loading
 * Increasing the number of unit test including all potential scenarios
+
+# App Architecture
+
+Application code design using MVVM pattern using:
+
+### *Model* :: Repository pattern
+### *Model* :: Remote service with RxJava 2 and Retrofit 2
+### *ViewModel* :: ViewModel with Architecture Components
+### *View* :: Activity controller apply changes via *LivedData* to RecyclerView and DiffUtils
