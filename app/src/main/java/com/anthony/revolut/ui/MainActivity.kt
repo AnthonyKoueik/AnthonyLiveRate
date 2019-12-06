@@ -27,7 +27,10 @@ class MainActivity : BaseActivity<MainActivityViewModel>(), MainView {
         super.onCreate(savedInstanceState)
 
 
-        currencyAdapter = CurrencyAdapter(this@MainActivity, mutableListOf())
+        currencyAdapter = CurrencyAdapter(this@MainActivity,
+            mutableListOf(),
+            viewModel::onNewAmountInput,
+            viewModel::onCurrencyChanged)
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -49,7 +52,7 @@ class MainActivity : BaseActivity<MainActivityViewModel>(), MainView {
     }
 
 
-    private fun bindResponse(apiResponse: DataResource<List<Rates>>) {
+    private fun bindResponse(apiResponse: DataResource<MutableList<Rates>>) {
 
 
         when (apiResponse.status) {
@@ -90,10 +93,11 @@ class MainActivity : BaseActivity<MainActivityViewModel>(), MainView {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private fun setupList(list: List<Any>) {
+    private fun setupList(list: MutableList<Rates>) {
 
         list.let {
-            currencyAdapter.setData(it)
+            currencyAdapter.updateRateList(it)
+           // currencyAdapter.setData(it)
             when (it.size) {
                 0 -> {
                     showEmptyList(getString(R.string.empty_list))

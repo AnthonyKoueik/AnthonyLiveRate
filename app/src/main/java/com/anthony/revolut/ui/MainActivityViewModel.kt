@@ -10,6 +10,8 @@ import com.anthony.revolut.domain.GetRatesUseCase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
+import java.math.BigDecimal
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -25,7 +27,7 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
 
     private var disposable: Disposable? = null
 
-    val liveData = MutableLiveData<DataResource<List<Rates>>>()
+    val liveData = MutableLiveData<DataResource<MutableList<Rates>>>()
 
     private var _currentCurrency = "EUR"
     private var _currentAmount = 1.00
@@ -56,6 +58,22 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
                     )
                 }
             )
+    }
+
+    fun onNewAmountInput(newAmount: Double) {
+        /*userCurrencyAmountDisposable?.dispose()
+        updateCurrencyAmountUseCase.run(newCurrencyAmount)
+            .subscribe()
+            .let { userCurrencyAmountDisposable = it }*/
+        _currentAmount = newAmount
+        Timber.d("_currentAmount $_currentAmount")
+    }
+
+    fun onCurrencyChanged(rates: Rates){
+        _currentAmount = rates.rate
+        _currentCurrency = rates.currency.currencyCode
+        Timber.d("_currentCurrency $_currentCurrency")
+        Timber.d("_currentAmount $_currentAmount")
     }
 
     override fun onCleared() {
