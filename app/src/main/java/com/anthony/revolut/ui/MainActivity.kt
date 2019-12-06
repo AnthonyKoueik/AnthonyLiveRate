@@ -30,7 +30,8 @@ class MainActivity : BaseActivity<MainActivityViewModel>(), MainView {
         currencyAdapter = CurrencyAdapter(this@MainActivity,
             mutableListOf(),
             viewModel::onNewAmountInput,
-            viewModel::onCurrencyChanged)
+            viewModel::onCurrencyChanged,
+            viewModel::onRateListsDifferences)
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
