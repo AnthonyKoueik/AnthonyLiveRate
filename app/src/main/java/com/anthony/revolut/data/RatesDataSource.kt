@@ -2,6 +2,7 @@ package com.anthony.revolut.data
 
 import com.anthony.revolut.data.entity.LatestRatesResponse
 import io.reactivex.Flowable
+import io.reactivex.Single
 
 
 /**
@@ -14,5 +15,5 @@ interface RatesDataSource {
     /**
      * Wrapper for my data need
      */
-    fun getRates(base : String) : Flowable<LatestRatesResponse>
+    fun getRates(base : String) : Single<LatestRatesResponse>
 }

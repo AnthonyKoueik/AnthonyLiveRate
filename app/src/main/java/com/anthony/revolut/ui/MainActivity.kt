@@ -97,7 +97,7 @@ class MainActivity : BaseActivity<MainActivityViewModel>(), MainView {
 
         list.let {
             currencyAdapter.updateRateList(it)
-           // currencyAdapter.setData(it)
+            //currencyAdapter.setData(it)
             when (it.size) {
                 0 -> {
                     showEmptyList(getString(R.string.empty_list))
