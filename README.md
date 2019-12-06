@@ -17,3 +17,5 @@ Application code design using MVVM pattern using:
 ### *Model* :: Remote service with RxJava 2 and Retrofit 2
 ### *ViewModel* :: ViewModel with Architecture Components
 ### *View* :: Activity controller apply changes via *LivedData* to RecyclerView and DiffUtils
+
+### Dependency Injection :: Dagger 2
