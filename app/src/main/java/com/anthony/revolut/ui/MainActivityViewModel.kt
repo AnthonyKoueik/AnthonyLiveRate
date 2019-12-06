@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.anthony.revolut.data.DataResource
 import com.anthony.revolut.data.entity.Rates
 import com.anthony.revolut.domain.GetRatesUseCase
+import com.anthony.revolut.utils.calculate
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -63,6 +64,7 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
                     ratesList.add(Rates(Currency.getInstance(result.base), _currentAmount))
                     ratesList.addAll(
                         result.rates.map {
+                            calculate(result.rates, Currency.getInstance(it.key), _currentAmount)
                             Rates(Currency.getInstance(it.key), (it.value * _currentAmount))
                         }
                     )

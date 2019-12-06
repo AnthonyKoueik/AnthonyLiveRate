@@ -12,7 +12,7 @@ import java.math.BigDecimal
  *
  * watch the amount entered and update the current amount in the view Model
  */
-class EditTextInputWatcher (private val newAmount: (Double) -> Unit):
+class EditTextInputWatcher(private val newAmount: (Double) -> Unit) :
     TextWatcher {
 
     override fun afterTextChanged(s: Editable?) {}
@@ -21,7 +21,13 @@ class EditTextInputWatcher (private val newAmount: (Double) -> Unit):
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         if (!s.isNullOrEmpty()) {
-            newAmount(s.toString().toDouble())
+            try {
+                newAmount(s.toString().toDouble())
+            } catch (x: Exception) {
+                newAmount(0.0)
+            }
+        }else {
+            newAmount(0.0)
         }
     }
 

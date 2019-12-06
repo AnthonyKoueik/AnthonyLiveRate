@@ -7,7 +7,7 @@ import com.anthony.revolut.data.remote.RatesRemoteDataSource
 import com.anthony.revolut.data.repository.RatesRepository
 import com.anthony.revolut.domain.GetRatesUseCase
 import io.reactivex.Single
-import junit.framework.Assert
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,6 +19,7 @@ import java.util.*
 import javax.inject.Inject
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
+import timber.log.Timber
 
 
 /**
@@ -36,20 +37,18 @@ class MainActivityViewModelTest {
     private var apiService = Mockito.mock(ApiService::class.java)
 
 
-    @Mock
     var remoteDataSource: RatesRemoteDataSource = RatesRemoteDataSource(apiService)
 
-    @Mock
     var repository: RatesRepository = RatesRepository(remoteDataSource)
 
-    @Mock
     var ratesUseCase: GetRatesUseCase = GetRatesUseCase(repository)
 
     /**
      * Sets up Dagger components for testing.
      */
     @Rule
-    var mockitoRule = MockitoJUnit.rule()
+    @JvmField
+    var mockitoRule = MockitoJUnit.rule()!!
 
     private lateinit var viewModel: MainActivityViewModel
 
@@ -72,7 +71,8 @@ class MainActivityViewModelTest {
     @Test
     fun `Given Base Currency and Correct Api - When Getting Latest Rates - Then Return Results`(){
         viewModel.liveData.observeForever {   rates ->
-            Assert.assertEquals(3, rates?.data?.size)
+            Timber.d("Rates size %s" , rates.data?.size)
+            Assert.assertEquals(7, rates?.data?.size)
         }
     }
 }
