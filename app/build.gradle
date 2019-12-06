@@ -64,6 +64,8 @@ dependencies {
     implementation deps.dagger.android_support
     kapt deps.dagger.compiler
     kapt deps.dagger.android_processor
+    kaptAndroidTest deps.dagger.compiler
+    kaptTest deps.dagger.compiler
 
     // OkHttp and Retrofit
     implementation deps.okhttp.runtime
@@ -81,8 +83,9 @@ dependencies {
 
     // Testing
     testImplementation deps.testing.junit
-    testImplementation deps.testing.mock_core
+    testImplementation deps.arch_core.testing
     // required if you want to use Mockito for Android tests
+    testImplementation deps.testing.mock_core
     androidTestImplementation 'org.mockito:mockito-android:2.24.5'
 
     androidTestImplementation deps.espresso.core
