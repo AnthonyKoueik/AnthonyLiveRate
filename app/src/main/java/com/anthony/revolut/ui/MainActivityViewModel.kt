@@ -13,6 +13,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.math.BigDecimal
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -32,15 +33,31 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
     private var _currentCurrency = "EUR"
     private var _currentAmount = 1.00
 
+    private var isLoaded : Boolean = false
+
+
+    fun testDispose(){
+        disposable?.let {
+            if (!it.isDisposed) it.dispose()
+        }
+
+    }
 
     fun loadLatestRates() {
 
+        disposable?.let {
+            if (!it.isDisposed) it.dispose()
+        }
+
         disposable = ratesUseCase.getRates(_currentCurrency)
             .subscribeOn(Schedulers.io())
+            .repeatWhen { it.delay(5, TimeUnit.SECONDS) }
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { liveData.setValue(DataResource.loading(null)) }
+            .doOnSubscribe {
+                if (!isLoaded) liveData.setValue(DataResource.loading(null)) }
             .subscribe(
                 { result ->
+                    Timber.d("_currentBaseCurrency %s", result.base)
                     val ratesList = ArrayList<Rates>()
                     ratesList.add(Rates(Currency.getInstance(result.base), _currentAmount))
                     ratesList.addAll(
@@ -48,6 +65,7 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
                             Rates(Currency.getInstance(it.key), it.value)
                         }
                     )
+                    isLoaded = true
                     liveData.setValue(DataResource.success(ratesList))
                 },
                 { throwable ->
@@ -74,6 +92,7 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
         _currentCurrency = rates.currency.currencyCode
         Timber.d("_currentCurrency $_currentCurrency")
         Timber.d("_currentAmount $_currentAmount")
+        loadLatestRates()
     }
 
     override fun onCleared() {

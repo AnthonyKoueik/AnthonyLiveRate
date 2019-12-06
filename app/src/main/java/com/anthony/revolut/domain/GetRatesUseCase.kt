@@ -6,6 +6,7 @@ import com.anthony.revolut.data.entity.LatestRatesResponse
 import com.anthony.revolut.data.repository.RatesRepository
 import com.google.gson.stream.MalformedJsonException
 import io.reactivex.Flowable
+import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 import retrofit2.HttpException
 import java.io.IOException
@@ -24,7 +25,7 @@ class GetRatesUseCase @Inject constructor(private val ratesRepository: RatesRepo
     /**
      * Returns the rates using a base symbol
      */
-    fun getRates(base: String): Flowable<LatestRatesResponse> {
+    fun getRates(base: String): Single<LatestRatesResponse> {
         return ratesRepository.getRates(base)
     }
 

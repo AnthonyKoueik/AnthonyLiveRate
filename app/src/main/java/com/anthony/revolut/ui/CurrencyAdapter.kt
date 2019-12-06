@@ -14,8 +14,6 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_currency_rate.*
 
 
-
-
 /**
  * Created by Anthony Koueik on 12/5/2019.
  * KOA
@@ -34,21 +32,53 @@ class CurrencyAdapter(
 
     private val newCurrencySelected = onNewCurrency
 
-    var onItemClick: ((Any) -> Unit)? = null
-
     override fun getItemCount(): Int = adapterDataList.size
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
-        return CurrencyViewHolder(
-            LayoutInflater.from(context)
-                .inflate(R.layout.item_currency_rate, parent, false)
-        )
+        val viewHolder =
+            CurrencyViewHolder(
+                LayoutInflater.from(context).inflate(R.layout.item_currency_rate, parent, false)
+            )
+        viewHolder.itemView.setOnClickListener {
+            if(viewHolder.adapterPosition != 0) viewHolder.et_amount.requestFocus() }
+        viewHolder.et_amount.apply { setOnFocusChangeListener { view, focused ->
+            when(focused) {
+                true -> {
+                    //swapRows(viewHolder)
+                    newCurrencySelected(adapterDataList[viewHolder.adapterPosition])
+                    addTextChangedListener(amountEditTextWatcher) }
+                false -> removeTextChangedListener(amountEditTextWatcher) }}}
+        return viewHolder
     }
 
 
+
+    private fun swapRows(viewHolder: RecyclerView.ViewHolder) {
+        viewHolder.layoutPosition.takeIf { it > 0 }
+            ?.also { position ->
+                adapterDataList.removeAt(position).also {
+                    adapterDataList.add(0, it)
+                }
+                notifyItemMoved(position, 0)
+            }
+    }
+
+    override fun onBindViewHolder(
+        holder: BaseViewHolder<*>,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        when(payloads.isEmpty()) {
+            true -> onBindViewHolder(holder, position)
+            false -> with((holder as CurrencyViewHolder).et_amount) { if(!isFocused) setText((payloads[0] as Rates).rate.toString()) }
+        }
+    }
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
+
+
         val element = adapterDataList[position]
-        (holder as CurrencyViewHolder).bind(element as Rates)
+        (holder as CurrencyViewHolder).bind(element)
     }
 
 
@@ -59,7 +89,7 @@ class CurrencyAdapter(
     }
 
     /* a better way for updating Recycler view adapter */
-    fun updateRateList(newList : MutableList<Rates>){
+    fun updateRateList(newList: MutableList<Rates>) {
         val ratesDiffCallback = RatesDiffCallback(adapterDataList, newList)
         val diffResult = DiffUtil.calculateDiff(ratesDiffCallback)
 
@@ -76,31 +106,7 @@ class CurrencyAdapter(
         override val containerView: View?
             get() = itemView
 
-        init {
-            itemView.setOnClickListener {
-                onItemClick?.invoke(adapterDataList[adapterPosition])
-                if (adapterPosition != 0) et_amount.requestFocus()
-            }
-        }
-
         override fun bind(item: Rates) {
-
-            et_amount.apply {
-                setOnFocusChangeListener { view, focused ->
-
-                    when (focused) {
-                        true -> {
-                            swapRows()
-                            newCurrencySelected(adapterDataList[adapterPosition])
-                            //onNewCurrencyFun()
-                            addTextChangedListener(amountEditTextWatcher)
-                        }
-                        false -> {
-                            removeTextChangedListener(amountEditTextWatcher)
-                        }
-                    }
-                }
-            }
 
             tv_name.text = item.currency.displayName
             tv_code.text = item.currency.currencyCode
@@ -116,16 +122,6 @@ class CurrencyAdapter(
                     , "drawable", context.packageName
                 )
             )
-        }
-
-        private fun swapRows() {
-            layoutPosition.takeIf { it > 0 }
-                ?.also { position ->
-                    adapterDataList.removeAt(position).also {
-                        adapterDataList.add(0, it)
-                    }
-                    notifyItemMoved(position, 0)
-                }
         }
     }
 
