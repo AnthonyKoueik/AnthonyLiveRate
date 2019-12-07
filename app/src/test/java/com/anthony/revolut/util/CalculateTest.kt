@@ -21,7 +21,7 @@ class CalculateTest {
 
         init {
             rateForUSD.apply {
-                put("EUR", 0.86195)
+                put("EUR", 0.86295)
                 put("GBP", 0.77424)
             }
         }
@@ -45,7 +45,7 @@ class CalculateTest {
             Currency.getInstance("EUR"),
             1.00
         )
-        assertEquals(0.86195, currencyValue?.rate)
+        assertEquals(0.86295, currencyValue?.rate)
     }
 
     @Test

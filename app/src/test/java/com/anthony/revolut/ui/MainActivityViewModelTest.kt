@@ -7,6 +7,7 @@ import com.anthony.revolut.data.remote.ApiService
 import com.anthony.revolut.data.remote.RatesRemoteDataSource
 import com.anthony.revolut.data.repository.RatesRepositoryImpl
 import com.anthony.revolut.domain.GetRatesUseCase
+import com.anthony.revolut.domain.GetRatesUseCaseImpl
 import com.anthony.revolut.util.TestSchedulers
 import io.reactivex.Single
 import org.junit.Assert
@@ -36,12 +37,12 @@ class MainActivityViewModelTest {
 
         init {
             rateForUSD.apply {
-                put("EUR", 0.86195)
+                put("EUR", 0.86295)
                 put("GBP", 0.77424)
             }
             rateForEURO.apply {
-                put("USD", 1.1652)
-                put("PLN", 4.3248)
+                put("USD", 1.1662)
+                put("PLN", 4.3228)
             }
 
             currencyRateResponseForUSD = LatestRatesResponse("", "USD", "12/6/2019", rateForUSD)
@@ -61,7 +62,7 @@ class MainActivityViewModelTest {
 
     var repositoryImpl: RatesRepositoryImpl = RatesRepositoryImpl(remoteDataSource)
 
-    var ratesUseCase: GetRatesUseCase = GetRatesUseCase(repositoryImpl)
+    var ratesUseCase: GetRatesUseCase = GetRatesUseCaseImpl(repositoryImpl)
 
     var testSchedulers : TestSchedulers = TestSchedulers()
     /**
