@@ -84,7 +84,7 @@ class MainActivityViewModelTest {
       //  val repository = Mockito.mock(RatesRepository::class.java)
 
         `when`(apiService.getRates("EUR")).thenReturn(Single.just(currencyRateResponseForEUR))
-        `when`(apiService.getRates("USD")).thenReturn(Single.just(currencyRateResponseForUSD))
+        //`when`(apiService.getRates("USD")).thenReturn(Single.just(currencyRateResponseForUSD))
 
         viewModel = MainActivityViewModel(ratesUseCase)
     }
@@ -94,7 +94,7 @@ class MainActivityViewModelTest {
         viewModel._liveData.observeForever { result ->
             when (result) {
                 is Success -> {
-                    Assert.assertEquals(7, result.data.size)
+                    Assert.assertEquals(2, result.data.size)
                 }
             }
 
