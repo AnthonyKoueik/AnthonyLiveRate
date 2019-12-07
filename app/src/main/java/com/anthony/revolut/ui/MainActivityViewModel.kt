@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.DiffUtil
+import com.anthony.revolut.MyApplication
 import com.anthony.revolut.data.Loading
 import com.anthony.revolut.data.Resource
 import com.anthony.revolut.data.Success
@@ -12,6 +13,7 @@ import com.anthony.revolut.data.Error
 import com.anthony.revolut.data.entity.Rates
 import com.anthony.revolut.domain.GetRatesUseCase
 import com.anthony.revolut.utils.calculate
+import com.anthony.revolut.utils.getCustomErrorMessage
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -81,7 +83,7 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
                 { throwable ->
                     _liveData.setValue(
                         Error(
-                            ratesUseCase.getCustomErrorMessage(throwable)
+                            getCustomErrorMessage(throwable, MyApplication.instance)
                         )
                     )
                 }

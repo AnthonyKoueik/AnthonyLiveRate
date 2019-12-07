@@ -1,5 +1,6 @@
 package com.anthony.revolut.domain
 
+import android.content.Context
 import com.anthony.revolut.MyApplication
 import com.anthony.revolut.R
 import com.anthony.revolut.data.entity.LatestRatesResponse
@@ -27,20 +28,5 @@ class GetRatesUseCase @Inject constructor(private val ratesRepository: RatesRepo
      */
     fun getRates(base: String): Single<LatestRatesResponse> {
         return ratesRepository.getRates(base)
-    }
-
-    fun getCustomErrorMessage(error: Throwable): String {
-
-        return if (error is SocketTimeoutException) {
-            MyApplication.instance.getString(R.string.requestTimeOutError)
-        } else if (error is MalformedJsonException) {
-            MyApplication.instance.getString(R.string.responseMalformedJson)
-        } else if (error is IOException) {
-            MyApplication.instance.getString(R.string.networkError)
-        } else if (error is HttpException) {
-            error.response().message()
-        } else {
-            MyApplication.instance.getString(R.string.unknownError)
-        }
     }
 }

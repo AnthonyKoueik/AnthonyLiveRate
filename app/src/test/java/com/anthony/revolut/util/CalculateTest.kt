@@ -15,7 +15,7 @@ import java.util.*
 class CalculateTest {
 
 
-    // mocks rates
+    // val rates
     companion object {
         private val rateForUSD = HashMap<String, Double>()
 

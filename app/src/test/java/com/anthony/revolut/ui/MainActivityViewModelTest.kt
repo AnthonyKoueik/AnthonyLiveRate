@@ -1,6 +1,7 @@
 package com.anthony.revolut.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.anthony.revolut.data.Success
 import com.anthony.revolut.data.entity.LatestRatesResponse
 import com.anthony.revolut.data.remote.ApiService
 import com.anthony.revolut.data.remote.RatesRemoteDataSource
@@ -30,15 +31,13 @@ import timber.log.Timber
  */
 class MainActivityViewModelTest {
 
-    // This rule is forced by LiveData trying to call MainThread
-
-    // mocks rates
+    // val rates
     companion object {
         private val rateForUSD = HashMap<String, Double>()
         private val rateForEURO = HashMap<String, Double>()
 
-        val currencyRateResponseForEUR : LatestRatesResponse
-        val currencyRateResponseForUSD : LatestRatesResponse
+        val currencyRateResponseForEUR: LatestRatesResponse
+        val currencyRateResponseForUSD: LatestRatesResponse
 
         init {
             rateForUSD.apply {
@@ -63,7 +62,6 @@ class MainActivityViewModelTest {
 
     private var apiService = Mockito.mock(ApiService::class.java)
 
-
     var remoteDataSource: RatesRemoteDataSource = RatesRemoteDataSource(apiService)
 
     var repository: RatesRepository = RatesRepository(remoteDataSource)
@@ -83,7 +81,7 @@ class MainActivityViewModelTest {
     fun init() {
 
 
-        val repository = Mockito.mock(RatesRepository::class.java)
+      //  val repository = Mockito.mock(RatesRepository::class.java)
 
         `when`(apiService.getRates("EUR")).thenReturn(Single.just(currencyRateResponseForEUR))
         `when`(apiService.getRates("USD")).thenReturn(Single.just(currencyRateResponseForUSD))
@@ -92,9 +90,14 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `Given Base Currency and Correct Api - When Getting Latest Rates - Then Return Results`(){
-        viewModel.liveData.observeForever {   rates ->
-            Assert.assertEquals(7, rates?.data?.size)
+    fun `Given Base Currency and Correct Api - When Getting Latest Rates - Then Return Results`() {
+        viewModel._liveData.observeForever { result ->
+            when (result) {
+                is Success -> {
+                    Assert.assertEquals(7, result.data.size)
+                }
+            }
+
         }
     }
 }
