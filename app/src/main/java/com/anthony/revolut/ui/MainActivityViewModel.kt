@@ -51,7 +51,6 @@ class MainActivityViewModel @Inject constructor(
         disposable?.let {
             if (!it.isDisposed) it.dispose()
         }
-
     }
 
     fun loadLatestRates() {
@@ -75,7 +74,7 @@ class MainActivityViewModel @Inject constructor(
                     ratesList.addAll(
                         result.rates.map {
                             calculate(result.rates, Currency.getInstance(it.key), _currentAmount)
-                            //Rates(Currency.getInstance(it.key), (it.value * _currentAmount))
+                            Rates(Currency.getInstance(it.key), (it.value * _currentAmount))
                         }
                     )
                     isLoaded = true

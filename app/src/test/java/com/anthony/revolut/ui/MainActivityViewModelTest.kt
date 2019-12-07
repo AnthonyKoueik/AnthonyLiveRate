@@ -4,8 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.anthony.revolut.any
 import com.anthony.revolut.data.Success
 import com.anthony.revolut.data.entity.LatestRatesResponse
+import com.anthony.revolut.data.entity.Rates
 import com.anthony.revolut.domain.GetRatesUseCase
 import com.anthony.revolut.util.TestSchedulers
+import com.anthony.revolut.utils.calculate
 import io.reactivex.Single
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert
@@ -36,6 +38,8 @@ class MainActivityViewModelTest {
         val currencyRateResponseForEUR: LatestRatesResponse
         val currencyRateResponseForUSD: LatestRatesResponse
 
+        private val usdRatesList = ArrayList<Rates>()
+
         init {
             rateForUSD.apply {
                 put("EUR", 0.86295)
@@ -49,6 +53,13 @@ class MainActivityViewModelTest {
             currencyRateResponseForUSD = LatestRatesResponse("", "USD", "12/6/2019", rateForUSD)
             currencyRateResponseForEUR = LatestRatesResponse("", "EUR", "12/6/2019", rateForEURO)
 
+
+            usdRatesList.add(Rates(Currency.getInstance(currencyRateResponseForUSD.base), 1.00))
+            usdRatesList.addAll(
+                currencyRateResponseForUSD.rates.map {
+                    Rates(Currency.getInstance(it.key), (it.value * 1.00))
+                }
+            )
 
         }
     }
@@ -82,7 +93,7 @@ class MainActivityViewModelTest {
         viewModel = MainActivityViewModel(useCase, testSchedulers)
     }
 
- /*   @Test
+    @Test
     fun `given a successful use case then result is correct`() {
 
         `when`(useCase.getRates(any())).thenReturn(Single.just(currencyRateResponseForUSD))
@@ -91,8 +102,8 @@ class MainActivityViewModelTest {
 
         assertThat(viewModel.liveData.value, instanceOf(Success::class.java))
         val resource = viewModel.liveData.value as Success
-        assertEquals(currencyRateResponseForUSD, resource.data)
-    }*/
+        assertEquals(usdRatesList, resource.data)
+    }
 
     @Test
     fun `given an error use case Then result is error`() {

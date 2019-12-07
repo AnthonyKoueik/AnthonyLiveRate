@@ -24,11 +24,11 @@ open class MyApplication : MultiDexApplication(), HasActivityInjector {
     override fun onCreate() {
         super.onCreate()
 
-        //DI Dagger Builder
-        DaggerAppComponent.builder().application(this).build().inject(this)
-
         // My App instance
         instance = this
+
+        //DI Dagger Builder
+        DaggerAppComponent.builder().application(this).build().inject(this)
 
         // Initialize Fresco
         Fresco.initialize(this)

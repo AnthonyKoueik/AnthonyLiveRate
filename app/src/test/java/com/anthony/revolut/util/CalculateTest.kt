@@ -45,7 +45,7 @@ class CalculateTest {
             Currency.getInstance("EUR"),
             1.00
         )
-        assertEquals(0.86295, currencyValue.rate)
+        assertEquals(0.86295, currencyValue?.rate)
     }
 
     @Test
@@ -55,6 +55,6 @@ class CalculateTest {
             Currency.getInstance("EUR"),
             0.0
         )
-        assertEquals(0.0, currencyValue.rate)
+        assertEquals(0.0, currencyValue?.rate)
     }
 }
