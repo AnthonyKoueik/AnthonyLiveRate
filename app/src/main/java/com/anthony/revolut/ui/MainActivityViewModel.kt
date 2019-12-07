@@ -1,6 +1,5 @@
 package com.anthony.revolut.ui
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +11,6 @@ import com.anthony.revolut.data.Success
 import com.anthony.revolut.data.Error
 import com.anthony.revolut.data.entity.Rates
 import com.anthony.revolut.domain.GetRatesUseCase
-import com.anthony.revolut.utils.DefaultSchedulers
 import com.anthony.revolut.utils.ExecutionSchedulers
 import com.anthony.revolut.utils.calculate
 import com.anthony.revolut.utils.getCustomErrorMessage
@@ -32,8 +30,8 @@ import kotlin.collections.ArrayList
  * anthony.koueik@gmail.com
  */
 class MainActivityViewModel @Inject constructor(
-    @VisibleForTesting val ratesUseCase: GetRatesUseCase,
-    @VisibleForTesting val defaultSchedulers: ExecutionSchedulers
+    private val ratesUseCase: GetRatesUseCase,
+    private val defaultSchedulers: ExecutionSchedulers
 ) : ViewModel() {
 
     private var disposable: Disposable? = null

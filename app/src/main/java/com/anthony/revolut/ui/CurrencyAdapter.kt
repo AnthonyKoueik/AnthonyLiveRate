@@ -35,7 +35,6 @@ class CurrencyAdapter(
 
     private val newCurrencySelected = onNewCurrency
 
-
     private var differenceListDisposable: Disposable? = null
 
     override fun getItemCount(): Int = adapterDataList.size
