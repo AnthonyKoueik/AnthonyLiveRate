@@ -12,10 +12,11 @@ import com.anthony.revolut.data.Success
 import com.anthony.revolut.data.Error
 import com.anthony.revolut.data.entity.Rates
 import com.anthony.revolut.domain.GetRatesUseCase
+import com.anthony.revolut.utils.DefaultSchedulers
+import com.anthony.revolut.utils.ExecutionSchedulers
 import com.anthony.revolut.utils.calculate
 import com.anthony.revolut.utils.getCustomErrorMessage
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -30,8 +31,10 @@ import kotlin.collections.ArrayList
  * KOA
  * anthony.koueik@gmail.com
  */
-class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseCase: GetRatesUseCase) :
-    ViewModel() {
+class MainActivityViewModel @Inject constructor(
+    @VisibleForTesting val ratesUseCase: GetRatesUseCase,
+    @VisibleForTesting val defaultSchedulers: ExecutionSchedulers
+) : ViewModel() {
 
     private var disposable: Disposable? = null
 
@@ -60,9 +63,9 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
         }
 
         disposable = ratesUseCase.getRates(_currentCurrency)
-            .subscribeOn(Schedulers.io())
+            .subscribeOn(defaultSchedulers.subscribeScheduler)
             .repeatWhen { it.delay(1, TimeUnit.SECONDS) }
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(defaultSchedulers.observeScheduler)
             .doOnSubscribe {
                 if (!isLoaded) _liveData.setValue(Loading(null))
             }

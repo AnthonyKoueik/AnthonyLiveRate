@@ -1,6 +1,6 @@
 package com.anthony.revolut
 
-import com.anthony.revolut.data.repository.RatesRepository
+import com.anthony.revolut.data.repository.RatesRepositoryImpl
 import com.anthony.revolut.di.module.*
 import dagger.BindsInstance
 import dagger.Component
@@ -29,5 +29,5 @@ interface TestAppComponent : AndroidInjector<TestMyApplication> {
         fun build(): TestAppComponent
     }
 
-    val ratesRepository: RatesRepository
+    val ratesRepositoryImpl: RatesRepositoryImpl
 }

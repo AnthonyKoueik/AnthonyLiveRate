@@ -5,23 +5,18 @@ import com.anthony.revolut.data.Success
 import com.anthony.revolut.data.entity.LatestRatesResponse
 import com.anthony.revolut.data.remote.ApiService
 import com.anthony.revolut.data.remote.RatesRemoteDataSource
-import com.anthony.revolut.data.repository.RatesRepository
+import com.anthony.revolut.data.repository.RatesRepositoryImpl
 import com.anthony.revolut.domain.GetRatesUseCase
+import com.anthony.revolut.util.TestSchedulers
 import io.reactivex.Single
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
 import java.util.*
-import javax.inject.Inject
 import org.mockito.junit.MockitoJUnit
-import org.mockito.junit.MockitoRule
-import timber.log.Timber
 
 
 /**
@@ -64,10 +59,11 @@ class MainActivityViewModelTest {
 
     var remoteDataSource: RatesRemoteDataSource = RatesRemoteDataSource(apiService)
 
-    var repository: RatesRepository = RatesRepository(remoteDataSource)
+    var repositoryImpl: RatesRepositoryImpl = RatesRepositoryImpl(remoteDataSource)
 
-    var ratesUseCase: GetRatesUseCase = GetRatesUseCase(repository)
+    var ratesUseCase: GetRatesUseCase = GetRatesUseCase(repositoryImpl)
 
+    var testSchedulers : TestSchedulers = TestSchedulers()
     /**
      * Sets up Dagger components for testing.
      */
@@ -81,12 +77,12 @@ class MainActivityViewModelTest {
     fun init() {
 
 
-      //  val repository = Mockito.mock(RatesRepository::class.java)
+      //  val repositoryImpl = Mockito.mock(RatesRepositoryImpl::class.java)
 
         `when`(apiService.getRates("EUR")).thenReturn(Single.just(currencyRateResponseForEUR))
         //`when`(apiService.getRates("USD")).thenReturn(Single.just(currencyRateResponseForUSD))
 
-        viewModel = MainActivityViewModel(ratesUseCase)
+        viewModel = MainActivityViewModel(ratesUseCase, testSchedulers)
     }
 
     @Test
@@ -100,7 +96,6 @@ class MainActivityViewModelTest {
                     )
                 }
             }
-
         }
     }
 }

@@ -3,8 +3,13 @@ package com.anthony.revolut.di.module
 import android.app.Application
 import android.content.Context
 import com.anthony.revolut.MyApplication
+import com.anthony.revolut.utils.DefaultSchedulers
+import com.anthony.revolut.utils.ExecutionSchedulers
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
+
+
 
 
 /**
@@ -20,4 +25,5 @@ abstract class AppModule() {
 
     @Binds
     abstract fun bindApplication(application: MyApplication): Application
+
 }

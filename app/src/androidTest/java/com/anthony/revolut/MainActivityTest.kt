@@ -9,7 +9,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.anthony.revolut.data.repository.RatesRepository
+import com.anthony.revolut.data.repository.RatesRepositoryImpl
 import com.anthony.revolut.ui.MainActivity
 import com.anthony.revolut.util.EspressoIdlingResource
 import org.junit.After
@@ -28,7 +28,7 @@ import org.junit.runner.RunWith
 @LargeTest
 class MainActivityTest {
 
-    private lateinit var ratesRepository: RatesRepository
+    private lateinit var ratesRepositoryImpl: RatesRepositoryImpl
 
 
     /**
@@ -39,7 +39,7 @@ class MainActivityTest {
 
     @Before
     fun setupDaggerComponent() {
-        ratesRepository = rule.testAppComponent.ratesRepository
+        ratesRepositoryImpl = rule.testAppComponent.ratesRepositoryImpl
     }
 
     /**
@@ -63,7 +63,7 @@ class MainActivityTest {
 
     @Test
     fun startActivityCall(){
-        ratesRepository.getRates("EUR")
+        ratesRepositoryImpl.getRates("EUR")
 
         // start up Tasks screen
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)

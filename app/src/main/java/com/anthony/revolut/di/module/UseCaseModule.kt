@@ -1,10 +1,11 @@
 package com.anthony.revolut.di.module
 
-import com.anthony.revolut.data.repository.RatesRepository
+import com.anthony.revolut.data.repository.RatesRepositoryImpl
 import com.anthony.revolut.domain.GetRatesUseCase
+import com.anthony.revolut.utils.DefaultSchedulers
+import com.anthony.revolut.utils.ExecutionSchedulers
 import dagger.Module
 import dagger.Provides
-import java.math.MathContext
 import javax.inject.Singleton
 
 
@@ -18,7 +19,12 @@ class UseCaseModule {
 
     @Singleton
     @Provides
-    fun providesGetRatesUseCase(
-        ratesRepository: RatesRepository
-    ): GetRatesUseCase = GetRatesUseCase(ratesRepository)
+    fun providesGetRatesUseCase(ratesRepositoryImpl: RatesRepositoryImpl): GetRatesUseCase
+            = GetRatesUseCase(ratesRepositoryImpl)
+
+    @Singleton
+    @Provides
+    fun providesExecutionSchedulers(): ExecutionSchedulers {
+        return DefaultSchedulers()
+    }
 }
