@@ -1,8 +1,6 @@
 package com.anthony.revolut
 
-import android.content.Context
 import com.anthony.revolut.data.repository.RatesRepository
-import com.anthony.revolut.di.AppComponent
 import com.anthony.revolut.di.module.*
 import dagger.BindsInstance
 import dagger.Component

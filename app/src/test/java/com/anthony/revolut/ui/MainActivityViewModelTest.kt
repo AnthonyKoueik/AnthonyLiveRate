@@ -95,6 +95,9 @@ class MainActivityViewModelTest {
             when (result) {
                 is Success -> {
                     Assert.assertEquals(2, result.data.size)
+                    Assert.assertEquals(
+                        " ", result.data[0].currency
+                    )
                 }
             }
 

@@ -5,11 +5,15 @@ import com.anthony.revolut.data.entity.Rates
 import com.anthony.revolut.data.remote.ApiService
 import com.anthony.revolut.data.remote.RatesRemoteDataSource
 import com.anthony.revolut.data.repository.RatesRepository
+import com.anthony.revolut.ui.MainActivityViewModelTest
+import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import java.io.IOException
+import java.lang.Exception
 import java.util.HashMap
 
 
@@ -58,14 +62,30 @@ class GetRatesUseCaseTest {
     
     @Before
     fun setup(){
-        //`when`(useCase.getRates("EUR").
+        `when`(useCase.getRates("EUR")).thenReturn(Single.just(currencyRateResponseForEUR))
+        `when`(useCase.getRates("USD")).thenReturn(Single.just(currencyRateResponseForUSD))
+        `when`(useCase.getRates("PLN")).thenReturn(Single.error(IOException("Internet Error")))
     }
 
     @Test
-    fun `given something then success`() {
+    fun `given USD Base Currency then Return USD rates response`() {
 
-        useCase.getRates(any()).test()
+        useCase.getRates("USD").test()
+            .assertValue(currencyRateResponseForUSD)
+    }
+
+    @Test
+    fun `given EUR Base Currency then Return EUR rates response`() {
+
+        useCase.getRates("EUR").test()
             .assertValue(currencyRateResponseForEUR)
+    }
+
+    @Test
+    fun `given PLN Base Currency then Return Exception response`() {
+
+        useCase.getRates("PLN").test()
+            .assertError(Exception("Internet Error"))
     }
 
 }

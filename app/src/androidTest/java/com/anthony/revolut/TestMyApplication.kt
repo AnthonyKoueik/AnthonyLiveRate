@@ -11,7 +11,10 @@ import javax.inject.Inject
  * KOA
  * anthony.koueik@gmail.com
  */
-class TestMyApplication : MyApplication(), HasActivityInjector {
+class TestMyApplication : MyApplication() {
 
 
+    override fun onCreate() {
+        super.onCreate()
+    }
 }
