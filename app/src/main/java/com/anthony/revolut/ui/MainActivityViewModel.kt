@@ -65,7 +65,7 @@ class MainActivityViewModel @Inject constructor(
             .repeatWhen { it.delay(1, TimeUnit.SECONDS) }
             .observeOn(defaultSchedulers.observeScheduler)
             .doOnSubscribe {
-                if (!isLoaded) _liveData.setValue(Loading(null))
+                if (!isLoaded) _liveData.value = Loading(null)
             }
             .subscribe(
                 { result ->
@@ -75,7 +75,7 @@ class MainActivityViewModel @Inject constructor(
                     ratesList.addAll(
                         result.rates.map {
                             calculate(result.rates, Currency.getInstance(it.key), _currentAmount)
-                            Rates(Currency.getInstance(it.key), (it.value * _currentAmount))
+                            //Rates(Currency.getInstance(it.key), (it.value * _currentAmount))
                         }
                     )
                     isLoaded = true

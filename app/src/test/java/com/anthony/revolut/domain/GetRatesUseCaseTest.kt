@@ -57,14 +57,14 @@ class GetRatesUseCaseTest {
     }
 
     @Test
-    fun `given USD Base Currency then Return USD rates response`() {
+    fun `given USD base currency Then return USD rates response`() {
 
         useCase.getRates("USD").test()
             .assertValue(currencyRateResponseForUSD)
     }
 
     @Test
-    fun `given EUR Base Currency then Return EUR rates response`() {
+    fun `given EUR base currency Then return EUR rates response`() {
 
         useCase.getRates("EUR").test()
             .assertValue(currencyRateResponseForEUR)

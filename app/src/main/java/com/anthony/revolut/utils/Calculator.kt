@@ -14,13 +14,9 @@ fun calculate(
     currencyRatesData: Map<String, Double>,
     wantedCurrency: Currency,
     exchangedValue: Double
-) : Rates? {
-    val exchangeRate = currencyRatesData[wantedCurrency.currencyCode]
+): Rates {
+    val exchangeRate = currencyRatesData[wantedCurrency.currencyCode] ?: error(0.0)
+    val calculatedValue = exchangeRate.times(exchangedValue)
+    return Rates(wantedCurrency, calculatedValue)
 
-    if (exchangeRate != null) {
-        val calculatedValue = exchangeRate * exchangedValue
-        return Rates(wantedCurrency, calculatedValue)
-    } else {
-        return null
-    }
 }

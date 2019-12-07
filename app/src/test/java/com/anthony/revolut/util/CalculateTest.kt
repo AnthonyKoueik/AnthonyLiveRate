@@ -29,7 +29,7 @@ class CalculateTest {
 
 
     @Test
-    fun `GivenEmptyMap-WhenCurrencyProvided-Returns-NoResult`() {
+    fun `Given empty map When currency provided returns no result`() {
         val currencyValue = calculate(
             emptyMap(),
             Currency.getInstance("EUR"),
@@ -39,22 +39,22 @@ class CalculateTest {
     }
 
     @Test
-    fun `GivenUsdBasedRates-WhenCurrencyProvidedIsEUR-Returns-ValidResults`() {
+    fun `Given usd based rates When currency provided is EUR Then returns valid results`() {
         val currencyValue = calculate(
             rateForUSD,
             Currency.getInstance("EUR"),
             1.00
         )
-        assertEquals(0.86295, currencyValue?.rate)
+        assertEquals(0.86295, currencyValue.rate)
     }
 
     @Test
-    fun `GivenZeroExchange-WhenCurrencyProvidedIsEUR-Returns-ZeroAsResult`() {
+    fun `Given zero exchange When currency provided is EUR  Then returns zero as result`() {
         val currencyValue = calculate(
             rateForUSD,
             Currency.getInstance("EUR"),
             0.0
         )
-        assertEquals(0.0, currencyValue?.rate)
+        assertEquals(0.0, currencyValue.rate)
     }
 }

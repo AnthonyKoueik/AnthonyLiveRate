@@ -1,23 +1,24 @@
 package com.anthony.revolut.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.anthony.revolut.any
 import com.anthony.revolut.data.Success
 import com.anthony.revolut.data.entity.LatestRatesResponse
-import com.anthony.revolut.data.remote.ApiService
-import com.anthony.revolut.data.remote.RatesRemoteDataSource
-import com.anthony.revolut.data.repository.RatesRepositoryImpl
 import com.anthony.revolut.domain.GetRatesUseCase
-import com.anthony.revolut.domain.GetRatesUseCaseImpl
 import com.anthony.revolut.util.TestSchedulers
 import io.reactivex.Single
+import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import java.util.*
 import org.mockito.junit.MockitoJUnit
+import java.io.IOException
 
 
 /**
@@ -56,15 +57,10 @@ class MainActivityViewModelTest {
     @JvmField
     val rule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private var apiService = Mockito.mock(ApiService::class.java)
+    private val useCase: GetRatesUseCase = mock(GetRatesUseCase::class.java)
 
-    var remoteDataSource: RatesRemoteDataSource = RatesRemoteDataSource(apiService)
 
-    var repositoryImpl: RatesRepositoryImpl = RatesRepositoryImpl(remoteDataSource)
-
-    var ratesUseCase: GetRatesUseCase = GetRatesUseCaseImpl(repositoryImpl)
-
-    var testSchedulers : TestSchedulers = TestSchedulers()
+    var testSchedulers: TestSchedulers = TestSchedulers()
     /**
      * Sets up Dagger components for testing.
      */
@@ -78,21 +74,45 @@ class MainActivityViewModelTest {
     fun init() {
 
 
-      //  val repositoryImpl = Mockito.mock(RatesRepositoryImpl::class.java)
+        //  val repositoryImpl = Mockito.mock(RatesRepositoryImpl::class.java)
 
-        `when`(apiService.getRates("EUR")).thenReturn(Single.just(currencyRateResponseForEUR))
+        `when`(useCase.getRates("EUR")).thenReturn(Single.just(currencyRateResponseForEUR))
         //`when`(apiService.getRates("USD")).thenReturn(Single.just(currencyRateResponseForUSD))
 
-        viewModel = MainActivityViewModel(ratesUseCase, testSchedulers)
+        viewModel = MainActivityViewModel(useCase, testSchedulers)
+    }
+
+ /*   @Test
+    fun `given a successful use case then result is correct`() {
+
+        `when`(useCase.getRates(any())).thenReturn(Single.just(currencyRateResponseForUSD))
+
+        viewModel.loadLatestRates()
+
+        assertThat(viewModel.liveData.value, instanceOf(Success::class.java))
+        val resource = viewModel.liveData.value as Success
+        assertEquals(currencyRateResponseForUSD, resource.data)
+    }*/
+
+    @Test
+    fun `given an error use case Then result is error`() {
+
+        `when`(useCase.getRates(any())).thenReturn(Single.error(IOException("some message")))
+
+        viewModel.loadLatestRates()
+
+        assertThat(viewModel.liveData.value, instanceOf(com.anthony.revolut.data.Error::class.java))
+        val resource = viewModel.liveData.value as Error
+        assertEquals("some message", resource.message)
     }
 
     @Test
-    fun `Given Base Currency and Correct Api - When Getting Latest Rates - Then Return Results`() {
+    fun `given base currency and correct api When getting latest rates  Then return results`() {
         viewModel.liveData.observeForever { result ->
             when (result) {
                 is Success -> {
-                    Assert.assertEquals(2, result.data.size)
-                    Assert.assertEquals(
+                    assertEquals(2, result.data.size)
+                    assertEquals(
                         " ", result.data[0].currency
                     )
                 }
