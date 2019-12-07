@@ -37,6 +37,7 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
     private var isLoaded: Boolean = false
 
 
+    @SuppressWarnings("Unused")
     fun testDispose() {
         disposable?.let {
             if (!it.isDisposed) it.dispose()

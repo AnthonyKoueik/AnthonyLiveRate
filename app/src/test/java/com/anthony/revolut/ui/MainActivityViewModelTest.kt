@@ -30,6 +30,32 @@ import timber.log.Timber
 class MainActivityViewModelTest {
 
     // This rule is forced by LiveData trying to call MainThread
+
+    // mocks rates
+    companion object {
+        private val rateForUSD = HashMap<String, Double>()
+        private val rateForEURO = HashMap<String, Double>()
+
+        val currencyRateResponseForEUR : LatestRatesResponse
+        val currencyRateResponseForUSD : LatestRatesResponse
+
+        init {
+            rateForUSD.apply {
+                put("EUR", 0.86195)
+                put("GBP", 0.77424)
+            }
+            rateForEURO.apply {
+                put("USD", 1.1652)
+                put("PLN", 4.3248)
+            }
+
+            currencyRateResponseForUSD = LatestRatesResponse("", "USD", "12/6/2019", rateForUSD)
+            currencyRateResponseForEUR = LatestRatesResponse("", "EUR", "12/6/2019", rateForEURO)
+
+
+        }
+    }
+
     @Rule
     @JvmField
     val rule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -55,12 +81,7 @@ class MainActivityViewModelTest {
     @Before
     fun init() {
 
-        val map1 = mapOf(Pair("USD", 1.1652), Pair("PLN", 4.3248))
-        val map2 = mapOf(Pair("EUR", 0.85646), Pair("PLN", 3.6984))
 
-        val currencyRateResponseForEUR = LatestRatesResponse("", "EUR", "12/6/2019", map1)
-
-        val currencyRateResponseForUSD = LatestRatesResponse("", "USD", "12/6/2019", map2)
 
         `when`(apiService.getRates("EUR")).thenReturn(Single.just(currencyRateResponseForEUR))
         `when`(apiService.getRates("USD")).thenReturn(Single.just(currencyRateResponseForUSD))
@@ -71,7 +92,6 @@ class MainActivityViewModelTest {
     @Test
     fun `Given Base Currency and Correct Api - When Getting Latest Rates - Then Return Results`(){
         viewModel.liveData.observeForever {   rates ->
-            Timber.d("Rates size %s" , rates.data?.size)
             Assert.assertEquals(7, rates?.data?.size)
         }
     }

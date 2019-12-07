@@ -1,5 +1,6 @@
 package com.anthony.revolut.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -65,6 +66,7 @@ class CurrencyAdapter(
     }
 
 
+    @SuppressWarnings("Unused")
     private fun swapRows(viewHolder: RecyclerView.ViewHolder) {
         viewHolder.layoutPosition.takeIf { it > 0 }
             ?.also { position ->
@@ -96,6 +98,7 @@ class CurrencyAdapter(
     }
 
 
+    @SuppressWarnings("Unused")
     fun setData(dataList: MutableList<Rates>) {
 
         this.adapterDataList = dataList
@@ -124,6 +127,7 @@ class CurrencyAdapter(
         override val containerView: View?
             get() = itemView
 
+        @SuppressLint("DefaultLocale")
         override fun bind(item: Rates) {
 
             tv_name.text = item.currency.displayName
