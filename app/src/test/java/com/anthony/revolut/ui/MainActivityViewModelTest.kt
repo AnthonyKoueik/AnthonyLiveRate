@@ -102,7 +102,7 @@ class MainActivityViewModelTest {
         viewModel.loadLatestRates()
 
         assertThat(viewModel.liveData.value, instanceOf(com.anthony.revolut.data.Error::class.java))
-        val resource = viewModel.liveData.value as Error
+        val resource = viewModel.liveData.value as com.anthony.revolut.data.Error
         assertEquals("some message", resource.message)
     }
 
