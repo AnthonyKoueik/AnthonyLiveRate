@@ -47,17 +47,7 @@ class GetRatesUseCaseTest {
         }
     }
 
-   // private val repositoryImpl: RatesRepositoryImpl = Mockito.mock(RatesRepositoryImpl::class.java)
-
-    private var apiService = Mockito.mock(ApiService::class.java)
-
-    private var remoteDataSource: RatesRemoteDataSource = RatesRemoteDataSource(apiService)
-
-
-    private var repository = Mockito.mock(RatesRepository::class.java)
-    private var repositoryImpl: RatesRepositoryImpl = RatesRepositoryImpl(remoteDataSource)
-
-    private val useCase = GetRatesUseCase(repository)
+    private val useCase = Mockito.mock(GetRatesUseCase::class.java)
     val rates = emptyList<Rates>()
     
     @Before
