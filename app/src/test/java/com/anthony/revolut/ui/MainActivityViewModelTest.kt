@@ -15,6 +15,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import java.util.*
 import javax.inject.Inject
 import org.mockito.junit.MockitoJUnit
@@ -82,6 +83,7 @@ class MainActivityViewModelTest {
     fun init() {
 
 
+        val repository = Mockito.mock(RatesRepository::class.java)
 
         `when`(apiService.getRates("EUR")).thenReturn(Single.just(currencyRateResponseForEUR))
         `when`(apiService.getRates("USD")).thenReturn(Single.just(currencyRateResponseForUSD))

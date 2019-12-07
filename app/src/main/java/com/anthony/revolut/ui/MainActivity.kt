@@ -8,14 +8,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.anthony.revolut.R
 import com.anthony.revolut.base.BaseActivity
-import com.anthony.revolut.data.DataResource
-import com.anthony.revolut.data.Status
+import com.anthony.revolut.data.*
 import com.anthony.revolut.data.entity.Rates
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
-class MainActivity : BaseActivity<MainActivityViewModel>(), MainView {
+class MainActivity : BaseActivity<MainActivityViewModel>() {
 
     override fun layoutRes(): Int = R.layout.activity_main
 
@@ -27,22 +26,29 @@ class MainActivity : BaseActivity<MainActivityViewModel>(), MainView {
         super.onCreate(savedInstanceState)
 
 
-        currencyAdapter = CurrencyAdapter(this@MainActivity,
+        currencyAdapter = CurrencyAdapter(
+            this@MainActivity,
             mutableListOf(),
             viewModel::onNewAmountInput,
             viewModel::onCurrencyChanged,
-            viewModel::onRateListsDifferences)
+            viewModel::onRateListsDifferences
+        )
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = currencyAdapter
-            addItemDecoration(DividerItemDecoration(this@MainActivity, LinearLayoutManager.VERTICAL))
+            addItemDecoration(
+                DividerItemDecoration(
+                    this@MainActivity,
+                    LinearLayoutManager.VERTICAL
+                )
+            )
         }
 
         viewModel.liveData.observe(this, Observer { apiResponse ->
 
             bindResponse(apiResponse)
-            Timber.i(apiResponse.message)
+            Timber.d(apiResponse.toString())
         })
     }
 
@@ -53,76 +59,61 @@ class MainActivity : BaseActivity<MainActivityViewModel>(), MainView {
     }
 
 
-    private fun bindResponse(apiResponse: DataResource<MutableList<Rates>>) {
+    private fun bindResponse(apiResponse: Resource<MutableList<Rates>>) {
 
 
-        when (apiResponse.status) {
+        when (apiResponse) {
 
-            Status.LOADING -> {
+            is Loading -> {
                 Timber.d("LOADING :: ")
                 showLoader()
             }
 
-            Status.SUCCESS -> {
+            is Success -> {
                 Timber.d("SUCCESS :: %s", apiResponse.data)
                 showList()
-                apiResponse.data?.let {
-                    setupList(apiResponse.data)
-                }
+                setupList(apiResponse.data)
+
             }
 
-            Status.ERROR -> {
+            is Error -> {
                 Timber.e("ERROR :: %s", apiResponse.message)
                 Toasty.error(
-                    applicationContext, apiResponse.message.toString(),
+                    applicationContext, apiResponse.message,
                     Toast.LENGTH_LONG, true
                 ).show()
-                showEmptyList(apiResponse.message.toString())
+                showEmptyList(apiResponse.message)
             }
         }
-    }
-
-    override fun setRateList(rateList: ArrayList<Rates>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun setNewAmount(amount: Double) {
-       // viewModel.ratesUseCase.
-    }
-
-    override fun setNewCurrency(currency: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private fun setupList(list: MutableList<Rates>) {
 
-        list.let {
-            currencyAdapter.updateRateList(it)
-            //currencyAdapter.setData(it)
-            when (it.size) {
-                0 -> {
-                    showEmptyList(getString(R.string.empty_list))
-                }
-                else -> {
-                    showList()
-                }
+        currencyAdapter.updateRateList(list)
+        //currencyAdapter.setData(it)
+        when (list.size) {
+            0 -> {
+                showEmptyList(getString(R.string.empty_list))
+            }
+            else -> {
+                showList()
             }
         }
     }
 
-    fun showLoader(){
+    private fun showLoader() {
         progressBar.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         tv_empty_list.visibility = View.GONE
     }
 
-    fun showList(){
+    private fun showList() {
         progressBar.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
         tv_empty_list.visibility = View.GONE
     }
 
-    fun showEmptyList(message: String){
+    fun showEmptyList(message: String) {
         progressBar.visibility = View.GONE
         recyclerView.visibility = View.GONE
         tv_empty_list.visibility = View.VISIBLE

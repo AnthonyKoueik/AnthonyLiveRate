@@ -20,8 +20,10 @@ class CalculateTest {
         private val rateForUSD = HashMap<String, Double>()
 
         init {
-            rateForUSD.apply { put("EUR", 0.86195) }
-                .apply { put("GBP", 0.77424) }
+            rateForUSD.apply {
+                put("EUR", 0.86195)
+                put("GBP", 0.77424)
+            }
         }
     }
 

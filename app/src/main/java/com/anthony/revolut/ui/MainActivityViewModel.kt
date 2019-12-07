@@ -1,10 +1,14 @@
 package com.anthony.revolut.ui
 
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.DiffUtil
-import com.anthony.revolut.data.DataResource
+import com.anthony.revolut.data.Loading
+import com.anthony.revolut.data.Resource
+import com.anthony.revolut.data.Success
+import com.anthony.revolut.data.Error
 import com.anthony.revolut.data.entity.Rates
 import com.anthony.revolut.domain.GetRatesUseCase
 import com.anthony.revolut.utils.calculate
@@ -29,7 +33,9 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
 
     private var disposable: Disposable? = null
 
-    val liveData = MutableLiveData<DataResource<MutableList<Rates>>>()
+    val _liveData = MutableLiveData<Resource<MutableList<Rates>>>()
+    val liveData: LiveData<Resource<MutableList<Rates>>> get() = _liveData
+
 
     private var _currentCurrency = "EUR"
     private var _currentAmount = 1.00
@@ -56,7 +62,7 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
             .repeatWhen { it.delay(1, TimeUnit.SECONDS) }
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                if (!isLoaded) liveData.setValue(DataResource.loading(null))
+                if (!isLoaded) _liveData.setValue(Loading(null))
             }
             .subscribe(
                 { result ->
@@ -70,12 +76,12 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
                         }
                     )
                     isLoaded = true
-                    liveData.setValue(DataResource.success(ratesList))
+                    _liveData.setValue(Success(ratesList))
                 },
                 { throwable ->
-                    liveData.setValue(
-                        DataResource.error(
-                            ratesUseCase.getCustomErrorMessage(throwable), null
+                    _liveData.setValue(
+                        Error(
+                            ratesUseCase.getCustomErrorMessage(throwable)
                         )
                     )
                 }
@@ -95,13 +101,18 @@ class MainActivityViewModel @Inject constructor(@VisibleForTesting val ratesUseC
         loadLatestRates()
     }
 
-    fun onRateListsDifferences(oldList: List<Rates>, newList: List<Rates>): Single<DiffUtil.DiffResult> {
-        return Single.just(DiffUtil.calculateDiff(
-            CurrencyAdapter.RatesDiffCallback(
-                oldList,
-                newList
+    fun onRateListsDifferences(
+        oldList: List<Rates>,
+        newList: List<Rates>
+    ): Single<DiffUtil.DiffResult> {
+        return Single.just(
+            DiffUtil.calculateDiff(
+                CurrencyAdapter.RatesDiffCallback(
+                    oldList,
+                    newList
+                )
             )
-        ))
+        )
             .subscribeOn(Schedulers.io())
     }
 

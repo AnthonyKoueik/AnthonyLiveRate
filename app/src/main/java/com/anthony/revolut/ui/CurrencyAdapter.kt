@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.anthony.revolut.R
-import com.anthony.revolut.base.BaseViewHolder
 import com.anthony.revolut.data.entity.Rates
 import com.anthony.revolut.utils.EditTextInputWatcher
 import io.reactivex.Single
@@ -28,7 +27,7 @@ class CurrencyAdapter(
     onNewAmountInput: (Double) -> Unit,
     onNewCurrency: (Rates) -> Unit,
     private val onDiffList: (List<Rates>, List<Rates>) -> Single<DiffUtil.DiffResult>
-) : RecyclerView.Adapter<BaseViewHolder<*>>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var adapterDataList: MutableList<Rates> = dataList
 
@@ -42,7 +41,7 @@ class CurrencyAdapter(
     override fun getItemCount(): Int = adapterDataList.size
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder{
         val viewHolder =
             CurrencyViewHolder(
                 LayoutInflater.from(context).inflate(R.layout.item_currency_rate, parent, false)
@@ -78,7 +77,7 @@ class CurrencyAdapter(
     }
 
     override fun onBindViewHolder(
-        holder: BaseViewHolder<*>,
+        holder: RecyclerView.ViewHolder,
         position: Int,
         payloads: MutableList<Any>
     ) {
@@ -90,11 +89,11 @@ class CurrencyAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
 
         val element = adapterDataList[position]
-        (holder as CurrencyViewHolder).bind(element)
+        (holder as CurrencyViewHolder).bind(element, context)
     }
 
 
@@ -121,14 +120,14 @@ class CurrencyAdapter(
     }
 
     /* My Item View in the List */
-    inner class CurrencyViewHolder(itemView: View) : BaseViewHolder<Rates>(itemView)
+    class CurrencyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         , LayoutContainer {
 
         override val containerView: View?
             get() = itemView
 
         @SuppressLint("DefaultLocale")
-        override fun bind(item: Rates) {
+        fun bind(item: Rates, context: Context) {
 
             tv_name.text = item.currency.displayName
             tv_code.text = item.currency.currencyCode
