@@ -7,7 +7,6 @@ import com.anthony.revolut.data.entity.LatestRatesResponse
 import com.anthony.revolut.data.entity.Rates
 import com.anthony.revolut.domain.GetRatesUseCase
 import com.anthony.revolut.util.TestSchedulers
-import com.anthony.revolut.utils.calculate
 import io.reactivex.Single
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert
@@ -94,7 +93,7 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `given a successful use case then result is correct`() {
+    fun `Given a successful use case then result is correct`() {
 
         `when`(useCase.getRates(any())).thenReturn(Single.just(currencyRateResponseForUSD))
 
@@ -106,9 +105,9 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `given an error use case Then result is error`() {
+    fun `Given an error use case Then result is error`() {
 
-        `when`(useCase.getRates(any())).thenReturn(Single.error(IOException("some message")))
+        `when`(useCase.getRates(any())).thenReturn(Single.error(Exception("some message")))
 
         viewModel.loadLatestRates()
 
@@ -119,12 +118,16 @@ class MainActivityViewModelTest {
 
     @Test
     fun `given base currency and correct api When getting latest rates  Then return results`() {
+        viewModel.loadLatestRates()
         viewModel.liveData.observeForever { result ->
             when (result) {
                 is Success -> {
-                    assertEquals(2, result.data.size)
+                    assertEquals(3, result.data.size)
                     assertEquals(
-                        " ", result.data[0].currency
+                        Currency.getInstance("EUR"), result.data[0].currency
+                    )
+                    assertEquals(
+                        4.3228, result.data[1].rate, 0.0
                     )
                 }
             }

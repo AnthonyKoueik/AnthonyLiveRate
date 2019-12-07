@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.DiffUtil
 import com.anthony.revolut.MyApplication
+import com.anthony.revolut.R
 import com.anthony.revolut.data.Loading
 import com.anthony.revolut.data.Resource
 import com.anthony.revolut.data.Success
