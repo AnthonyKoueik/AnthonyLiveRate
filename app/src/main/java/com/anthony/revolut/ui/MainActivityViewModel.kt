@@ -83,9 +83,7 @@ class MainActivityViewModel @Inject constructor(
                 },
                 { throwable ->
                     _liveData.setValue(
-                        Error(
-                            getCustomErrorMessage(throwable, MyApplication.instance)
-                        )
+                        Error(getCustomErrorMessage(throwable))
                     )
                 }
             )

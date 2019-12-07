@@ -7,6 +7,7 @@ import com.anthony.revolut.data.entity.LatestRatesResponse
 import com.anthony.revolut.data.entity.Rates
 import com.anthony.revolut.domain.GetRatesUseCase
 import com.anthony.revolut.util.TestSchedulers
+import io.reactivex.Flowable
 import io.reactivex.Single
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert
@@ -107,17 +108,17 @@ class MainActivityViewModelTest {
     @Test
     fun `Given an error use case Then result is error`() {
 
-        `when`(useCase.getRates(any())).thenReturn(Single.error(Exception("some message")))
+        `when`(useCase.getRates(any())).thenReturn(Single.error(Exception("Something went wrong!")))
 
         viewModel.loadLatestRates()
 
         assertThat(viewModel.liveData.value, instanceOf(com.anthony.revolut.data.Error::class.java))
         val resource = viewModel.liveData.value as com.anthony.revolut.data.Error
-        assertEquals("some message", resource.message)
+        assertEquals("Something went wrong!", resource.message)
     }
 
     @Test
-    fun `given base currency and correct api When getting latest rates  Then return results`() {
+    fun `Given base currency and correct api When getting latest rates  Then return results`() {
         viewModel.loadLatestRates()
         viewModel.liveData.observeForever { result ->
             when (result) {

@@ -15,17 +15,17 @@ import java.net.SocketTimeoutException
  * anthony.koueik@gmail.com
  */
 
-fun getCustomErrorMessage(error: Throwable, context: Context): String {
+fun getCustomErrorMessage(error: Throwable): String {
 
     return if (error is SocketTimeoutException) {
-        context.getString(R.string.requestTimeOutError)
+        "We couldn\\’t capture your request in time. Please try again."
     } else if (error is MalformedJsonException) {
-        context.getString(R.string.responseMalformedJson)
+        "We hit an error. Try again later"
     } else if (error is IOException) {
-        context.getString(R.string.networkError)
+        "You are not connected to a wifi or cellular data network. Please connect and try again"
     } else if (error is HttpException) {
         error.response().message()
     } else {
-        context.getString(R.string.unknownError)
+        "Something went wrong!"
     }
 }
