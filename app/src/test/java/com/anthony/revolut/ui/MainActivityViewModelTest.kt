@@ -87,7 +87,7 @@ class MainActivityViewModelTest {
 
     @Test
     fun `Given Base Currency and Correct Api - When Getting Latest Rates - Then Return Results`() {
-        viewModel._liveData.observeForever { result ->
+        viewModel.liveData.observeForever { result ->
             when (result) {
                 is Success -> {
                     Assert.assertEquals(2, result.data.size)

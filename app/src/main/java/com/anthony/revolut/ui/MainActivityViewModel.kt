@@ -38,7 +38,7 @@ class MainActivityViewModel @Inject constructor(
 
     private var disposable: Disposable? = null
 
-    val _liveData = MutableLiveData<Resource<MutableList<Rates>>>()
+    private val _liveData = MutableLiveData<Resource<MutableList<Rates>>>()
     val liveData: LiveData<Resource<MutableList<Rates>>> get() = _liveData
 
 
