@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.anthony.revolut.R
 import com.anthony.revolut.data.entity.Rates
+import com.anthony.revolut.utils.DefaultSchedulers
 import com.anthony.revolut.utils.EditTextInputWatcher
+import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -26,7 +28,7 @@ class CurrencyAdapter(
     dataList: MutableList<Rates>,
     onNewAmountInput: (Double) -> Unit,
     onNewCurrency: (Rates) -> Unit,
-    private val onDiffList: (List<Rates>, List<Rates>) -> Single<DiffUtil.DiffResult>
+    private val onDiffList: (List<Rates>, List<Rates>) -> Flowable<DiffUtil.DiffResult>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var adapterDataList: MutableList<Rates> = dataList
@@ -36,6 +38,8 @@ class CurrencyAdapter(
     private val newCurrencySelected = onNewCurrency
 
     private var differenceListDisposable: Disposable? = null
+
+    private val defaultSchedulers = DefaultSchedulers()
 
     override fun getItemCount(): Int = adapterDataList.size
 
@@ -108,7 +112,7 @@ class CurrencyAdapter(
 
         differenceListDisposable?.dispose()
         onDiffList(adapterDataList, newList)
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(defaultSchedulers.observeScheduler)
             .subscribe({
                 adapterDataList.clear()
                 adapterDataList.addAll(newList)

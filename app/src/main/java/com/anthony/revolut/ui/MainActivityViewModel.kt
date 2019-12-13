@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.DiffUtil
-import com.anthony.revolut.MyApplication
-import com.anthony.revolut.R
 import com.anthony.revolut.data.Loading
 import com.anthony.revolut.data.Resource
 import com.anthony.revolut.data.Success
@@ -15,7 +13,7 @@ import com.anthony.revolut.domain.GetRatesUseCase
 import com.anthony.revolut.utils.ExecutionSchedulers
 import com.anthony.revolut.utils.calculate
 import com.anthony.revolut.utils.getCustomErrorMessage
-import io.reactivex.Single
+import io.reactivex.Flowable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -105,8 +103,8 @@ class MainActivityViewModel @Inject constructor(
     fun onRateListsDifferences(
         oldList: List<Rates>,
         newList: List<Rates>
-    ): Single<DiffUtil.DiffResult> {
-        return Single.just(
+    ): Flowable<DiffUtil.DiffResult> {
+        return Flowable.just(
             DiffUtil.calculateDiff(
                 CurrencyAdapter.RatesDiffCallback(
                     oldList,
