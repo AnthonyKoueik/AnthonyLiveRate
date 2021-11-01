@@ -1,4 +1,4 @@
-# AnthonyRevolut
+# Anthony Test App
 Revolut Android Test Application
 
 ## Enhancements that could be made
