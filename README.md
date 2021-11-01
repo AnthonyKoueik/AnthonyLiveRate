@@ -1,5 +1,5 @@
-# Anthony Test App
-Revolut Android Test Application
+# Anthony koueik
+Android playground Application
 
 ## Enhancements that could be made
 
